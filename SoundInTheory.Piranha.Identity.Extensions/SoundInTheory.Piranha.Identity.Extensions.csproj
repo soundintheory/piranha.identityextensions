@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Piranha" Version="12.0.0" />
+    <PackageReference Include="Piranha.AspNetCore.Hosting" Version="12.0.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity" Version="12.0.0" />
+    <PackageReference Include="Piranha.Manager" Version="12.0.0" />
+    <PackageReference Include="Piranha.Manager.LocalAuth" Version="12.0.0" />
+    <PackageReference Include="SoundInTheory.Piranha.Emails" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\dist\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Manager\Pages\Partial\Actions\" />
+  </ItemGroup>
+
+</Project>
