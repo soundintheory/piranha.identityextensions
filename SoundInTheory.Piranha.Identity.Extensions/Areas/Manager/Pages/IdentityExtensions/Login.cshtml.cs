@@ -61,6 +61,13 @@ namespace Piranha.Manager.LocalAuth.Areas.Manager.Pages.IdentityExtensions
         [TempData]
         public string ErrorMessage { get; set; }
 
+        /// <summary>
+        /// A one-shot confirmation handed over by another page - currently ResetPassword after a successful
+        /// reset. The property name is the TempData key, so it has to match the property that sets it.
+        /// </summary>
+        [TempData]
+        public string StatusMessage { get; set; }
+
 
         public ILoginTheme Theme { get; set; }
 

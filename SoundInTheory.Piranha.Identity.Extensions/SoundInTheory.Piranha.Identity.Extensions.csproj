@@ -17,7 +17,30 @@
     <PackageReference Include="Piranha.AspNetCore.Identity" Version="12.0.0" />
     <PackageReference Include="Piranha.Manager" Version="12.0.0" />
     <PackageReference Include="Piranha.Manager.LocalAuth" Version="12.0.0" />
+  </ItemGroup>
+
+  <!--
+    SoundInTheory.Piranha.Emails comes either from NuGet or from source. A host that already builds it from
+    source - Gibbons does, via the piranha-emails submodule - must NOT also take the package, or this project
+    compiles against published 1.0.0 while the app runs the source build, which has moved past it: one
+    assembly identity, two copies, and the mismatch only shows up at runtime.
+
+    So: if a sibling piranha-emails checkout exists next to us, reference it; otherwise take the package.
+    A host can also set EmailsProjectPath explicitly. This is resolved as a property rather than passed via
+    ProjectReference AdditionalProperties on purpose - the latter builds this project once per property set,
+    and two builds sharing one obj/bin is a restore conflict waiting to happen.
+  -->
+  <PropertyGroup>
+    <EmailsProjectPath Condition="'$(EmailsProjectPath)' == ''">$(MSBuildThisFileDirectory)..\..\piranha-ecommerce\submodules\piranha-emails\SoundInTheory.Piranha.Emails\SoundInTheory.Piranha.Emails.csproj</EmailsProjectPath>
+    <EmailsProjectPath Condition="!Exists('$(EmailsProjectPath)')"></EmailsProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(EmailsProjectPath)' == ''">
     <PackageReference Include="SoundInTheory.Piranha.Emails" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(EmailsProjectPath)' != ''">
+    <ProjectReference Include="$(EmailsProjectPath)" />
   </ItemGroup>
 
   <ItemGroup>

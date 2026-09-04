@@ -93,7 +93,35 @@ namespace Piranha.Manager.LocalAuth.Areas.Manager.Pages.IdentityExtensions
 
             var token = await _service.GeneratePasswordResetTokenAsync(usr);
 
+            // ResetPassword is a Razor Page, not an MVC action, so it has to be generated with Url.Page.
+            // Url.Action returns null when nothing matches, which sent the email with an empty link.
+            var link = Url.Page(
+                "/IdentityExtensions/ResetPassword",
+                pageHandler: null,
+                values: new { area = "Manager", email = Input.Email, token },
+                protocol: Request.Scheme
+            );
+
+            if (string.IsNullOrEmpty(link))
+            {
+                // Fail loudly rather than send an email whose link goes nowhere.
+                return StatusCode(500, "Could not generate the password reset link");
+            }
+
             var template = await _emailTemplateResolver.ResolveAsync(ManagerForgotPasswordEmailTemplate.Key);
+
+            // Existence is not enough. EmailTemplatesStartup auto-creates the row on boot with Content = ""
+            // and SubjectLine left NULL, so an unauthored template gets this far and then dies inside
+            // Handlebars.Compile(null) with an ArgumentNullException naming a parameter called 's'. Check the
+            // fields that actually have to be there.
+            if (template?.Template == null
+                || string.IsNullOrWhiteSpace(template.Template.SubjectLine)
+                || string.IsNullOrWhiteSpace(template.Template.Content))
+            {
+                return StatusCode(500,
+                    $"Email template '{ManagerForgotPasswordEmailTemplate.Key}' has not been set up - " +
+                    "it needs a subject line and content adding in the manager");
+            }
 
             var result = _email.Send(
                 template.Template.EmailSenderKey,
@@ -102,7 +130,7 @@ namespace Piranha.Manager.LocalAuth.Areas.Manager.Pages.IdentityExtensions
                 template.Template.Content,
                 new ManagerForgotPasswordEmailViewModel()
                 {
-                    Link = Url.Action("reset-password", "manager", new { token, Input.Email }, Request.Scheme),
+                    Link = link,
                     Name = usr.UserName
                 }
             );

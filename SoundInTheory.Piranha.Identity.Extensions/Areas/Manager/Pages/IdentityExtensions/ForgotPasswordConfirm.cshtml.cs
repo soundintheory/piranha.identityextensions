@@ -11,15 +11,13 @@ namespace Piranha.Manager.LocalAuth.Areas.Manager.Pages.IdentityExtensions
     [AllowAnonymous]
     public class ForgotPasswordConfirm : PageModel
     {
-        private readonly ISecurity _service;
         private readonly LoginThemeService _loginTheme;
 
-        public ForgotPasswordConfirm(ISecurity service, LoginThemeService loginTheme)
+        public ForgotPasswordConfirm(LoginThemeService loginTheme)
         {
-            _service = service;
             _loginTheme = loginTheme;
         }
-        
+
 
         public ILoginTheme Theme { get; set; }
 

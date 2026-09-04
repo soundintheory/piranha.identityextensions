@@ -40,7 +40,8 @@ namespace SoundInTheory.Piranha.Identity.Extensions
         /// <summary>
         /// Gets the module icon url
         /// </summary>
-        public string IconUrl => "/manager/PiranhaModule/piranha-logo.png";
+        // Must match the RequestPath the embedded assets are served under in UseIdentityExtensions.
+        public string IconUrl => "/manager/IdentityExtensions/piranha-logo.png";
 
         public void Init()
         {

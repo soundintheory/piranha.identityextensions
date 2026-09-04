@@ -70,7 +70,10 @@ public static class IdentityExtensionsExtensions
     {
         return builder.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new EmbeddedFileProvider(typeof(IdentityExtensionsModule).Assembly, "IdentityExtensions.assets.dist"),
+            // The base namespace must match how the resources are actually named, which is the assembly's
+            // root namespace + the folder path. "IdentityExtensions.assets.dist" matched nothing, so every
+            // embedded asset 404'd.
+            FileProvider = new EmbeddedFileProvider(typeof(IdentityExtensionsModule).Assembly, "SoundInTheory.Piranha.Identity.Extensions.assets.dist"),
             RequestPath = "/manager/IdentityExtensions"
         });
     }

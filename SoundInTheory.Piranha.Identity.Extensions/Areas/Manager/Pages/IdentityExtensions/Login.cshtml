@@ -41,6 +41,12 @@
                             </p>
                         </div>
 
+                        @* Not .error-message - that is hidden until the card carries .has-error. *@
+                        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                        {
+                            <div class="alert alert-success mb-0" role="status">@Model.StatusMessage</div>
+                        }
+
                         @if (!Model.ModelState.IsValid)
                         {
                             <p class="error-message">@string.Join("\r\n", ModelState.SelectMany(p => p.Value.Errors).Select(e => e.ErrorMessage))</p>
